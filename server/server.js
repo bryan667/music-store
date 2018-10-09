@@ -17,7 +17,15 @@ app.use(cookieParser())
 const { User } = require('./models/user')
 
 app.post('/api/users/register', (req, res)=> {
-    res.send(200)    
+    const user = new User(req.body)
+    user.save((err, docs)=> {
+        if(err) return res.json({success:false, err})
+        res.status(200).json({
+            success: true,
+            userdata: docs
+        })
+    })
+
 })
 
 
