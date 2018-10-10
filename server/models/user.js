@@ -1,9 +1,8 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const saltRounds = 10
-const jsonToken = require('jsonwebtoken')
+const jwt = require('jsonwebtoken')
 require('dotenv').config()
-
 
 const userSchema = mongoose.Schema({
     email:{
@@ -61,11 +60,12 @@ userSchema.pre('save', function(next){
     } else {
         next()
     }
-
 })
 
 userSchema.methods.comparePassword = function(enteredPassword,cb) {
-    bcrypt.compare(enteredPassword,this.password, function(err, didItMatch){
+    var user = this
+
+    bcrypt.compare(enteredPassword, user.password, function(err, didItMatch){
         if(err) return cb(err)
         cb(null, didItMatch)
     })
@@ -73,8 +73,8 @@ userSchema.methods.comparePassword = function(enteredPassword,cb) {
 
 userSchema.methods.generateTheAwyis = function(cb){
     var user = this
-    var token = jsonToken.sign(user._id.toHexString(),process.env.TOKEN)
 
+    var token = jwt.sign(user._id.toHexString(),process.env.TOKEN)
     user.token = token
     user.save((err,user)=> {
         if (err) return cb(err)
@@ -82,7 +82,22 @@ userSchema.methods.generateTheAwyis = function(cb){
     })
 }
 
+userSchema.statics.findByToken = function(token, cb) {
+    var user = this
+
+    jwt.verify(token, process.env.TOKEN, function(err, decoded){
+        //"decoded" is based on token = jwt.sign(user._id.toHexString(),process.env.TOKEN)
+        //"decoded" is the original payload(user._id) without the privateKey(process.env.TOKEN)
+        
+        user.findOne({'_id': decoded, 'token':token}, function(err, user){ 
+            if (err) return cb(err)
+            cb(null, user)
+        })
+    })
+}
+
 
 const User = mongoose.model('User', userSchema)//convert the schema to a model --- mongoose.model(modelName, schema)
+//db collection?
 
-module.exports = { User }
+module.exports = {User}

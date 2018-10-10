@@ -14,11 +14,38 @@ app.use(bodyParser.json())
 app.use(cookieParser())
 
 //Models
-const { User } = require('./models/user')
+const {User} = require('./models/user')
+
+//Middleware
+const {auth} = require('./middleware/auth')
+
+app.get('/api/users/auth', auth, (req, res)=> {
+
+    return res.status(200).json({
+        message: 'awyis',
+        isAdmin: req.user.role === 0 ? true : false,
+        email: req.user.email,
+        name: req.user.name,
+        lastname: req.user.lastname,
+        role: req.user.role,
+        cart: req.user.cart,
+        history: req.user.history
+    })
+})
+
+app.get('/api/users/logout', auth, (req,res)=> {
+
+    User.findOneAndUpdate({_id: req.user.id},{token:''},(err, doc)=>{
+        if (err) return res.json({success:false, err})
+        return res.status(200).send({
+            success: true
+        })
+    })
+})
 
 app.post('/api/users/register', (req, res)=> {
     const user = new User(req.body)
-
+    
     user.save((err, docs)=> {
         
         if(err) return res.json({success:false, err})
@@ -43,7 +70,6 @@ app.post('/api/users/login', (req, res)=> {
             })
         })
     })
-
 })
 
 const port = process.env.PORT || 3001
