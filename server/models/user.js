@@ -2,6 +2,8 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const saltRounds = 10
 const jsonToken = require('jsonwebtoken')
+require('dotenv').config()
+
 
 const userSchema = mongoose.Schema({
     email:{
@@ -43,8 +45,6 @@ const userSchema = mongoose.Schema({
 
 })
 
-const User = mongoose.model('User', userSchema)//convert the schema to a model --- mongoose.model(modelName, schema)
-
 userSchema.pre('save', function(next){
     var user = this  //"this" inside of a pre-save hook is the document that is about to be saved
 
@@ -65,15 +65,24 @@ userSchema.pre('save', function(next){
 })
 
 userSchema.methods.comparePassword = function(enteredPassword,cb) {
-    bcrypt.compare(enteredPassword,this.password, function(err, isMatch){
-        console.log(enteredPassword, this.password)
+    bcrypt.compare(enteredPassword,this.password, function(err, didItMatch){
         if(err) return cb(err)
-        cb(null, isMatch)
+        cb(null, didItMatch)
     })
 }
 
-userSchema.methods.generateToken = function(){
+userSchema.methods.generateTheAwyis = function(cb){
+    var user = this
+    var token = jsonToken.sign(user._id.toHexString(),process.env.TOKEN)
 
+    user.token = token
+    user.save((err,user)=> {
+        if (err) return cb(err)
+        cb(null,user)
+    })
 }
+
+
+const User = mongoose.model('User', userSchema)//convert the schema to a model --- mongoose.model(modelName, schema)
 
 module.exports = { User }

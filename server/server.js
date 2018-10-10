@@ -31,18 +31,15 @@ app.post('/api/users/register', (req, res)=> {
 
 app.post('/api/users/login', (req, res)=> {
 
-    //find email
-    //check password
-    //generate a token
-
     User.findOne({'email':req.body.email}, (err, user)=>{
         if(!user) return res.json({loginSuccess:false, message: 'Login Failed. Email not found'})
         
         user.comparePassword(req.body.password,(err, didItMatch)=>{
             if(!didItMatch) return res.json({loginSuccess:false, message: 'Incorrect Password'})
             
-            user.generateToken((err,user)=> {
-                
+            user.generateTheAwyis((err,user)=> {
+                if(err) return res.status(400).json({success:false, err})
+                res.cookie('Awyis_aw', user.token).status(200).json({loginSuccess: true})
             })
         })
     })
