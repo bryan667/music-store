@@ -28,6 +28,29 @@ const {checkAdmin} = require('./middleware/checkadmin')
 //                          PRODUCTS
 //=================================================================
 
+
+//fetch with sortBy,order,limit
+// /articles?sortBy=sold&order=desc&limit=4&skip=5
+app.get('/api/products/articles', (req,res)=> {
+
+    let order = req.query.order ? req.query.order : 'asc'
+    let sortBy = req.query.sortBy ? req.query.sortBy : '_id'
+    let limit = req.query.limit ? parseInt(req.query.limit) : 100
+
+    Product.
+    find().
+    populate('brand').
+    populate('wood').
+    sort([[sortBy,order]]).
+    limit(limit).
+    exec((err, docs)=> {
+        if (err) return res.status(400).send(err)
+        return res.send(docs)
+    })
+})
+
+
+// /api/products/articles_by_id?id=123456,235646,456465
 app.get('/api/products/articles_by_id', (req,res)=> {
     let type = req.query.type
     let items = req.query.id
@@ -85,7 +108,7 @@ app.get('/api/products/get_woods', (req, res) => {
 })
 
 //=================================================================
-//                          BRAND
+//                          BRANDS
 //=================================================================
 
 app.post('/api/products/brand', auth, checkAdmin, (req, res)=> {
