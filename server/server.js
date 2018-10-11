@@ -16,13 +16,39 @@ app.use(cookieParser())
 //Models
 const {User} = require('./models/user')
 const {Brand} = require('./models/brand')
+const {Wood} = require('./models/wood')
 
 //Middleware
 const {auth} = require('./middleware/auth')
 const {checkAdmin} = require('./middleware/checkadmin')
 
+
 //=================================================================
-//                      BRAND
+//                          WOODS
+//=================================================================
+
+app.post('/api/products/wood', auth, checkAdmin, (req, res)=> {
+    const wood = new Wood(req.body)
+
+    wood.save((err, doc)=>{
+        if (err) return res.json({success:false, err})
+        res.status(200).json({
+            success: true,
+            wood: doc
+        })
+    })
+})
+
+app.get('/api/products/get_woods', (req, res) => {
+    Wood.find({}, (err, woods)=> {
+        if (err) return res.status(400).send(err)
+        res.status(200).json(woods)
+    })
+})
+
+
+//=================================================================
+//                          BRAND
 //=================================================================
 
 app.post('/api/products/brand', auth, checkAdmin, (req, res)=> {
@@ -47,7 +73,7 @@ app.get('/api/products/get_brands', (req, res) => {
 
 
 //=================================================================
-//                      USERS
+//                          USERS
 //=================================================================
 
 app.get('/api/users/auth', auth, (req, res)=> {
