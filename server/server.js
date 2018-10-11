@@ -15,9 +15,35 @@ app.use(cookieParser())
 
 //Models
 const {User} = require('./models/user')
+const {Brand} = require('./models/brand')
 
 //Middleware
 const {auth} = require('./middleware/auth')
+const {checkAdmin} = require('./middleware/checkadmin')
+
+//=================================================================
+//                      BRAND
+//=================================================================
+
+app.post('/api/products/brand', auth, checkAdmin, (req, res)=> {
+    const brand = new Brand(req.body)
+
+    brand.save((err, doc)=>{
+        if (err) return res.json({success:false, err})
+        res.status(200).json({
+            success: true,
+            brand: doc
+        })
+    })
+})
+
+
+
+
+
+//=================================================================
+//                      USERS
+//=================================================================
 
 app.get('/api/users/auth', auth, (req, res)=> {
 
@@ -35,7 +61,10 @@ app.get('/api/users/auth', auth, (req, res)=> {
 
 app.get('/api/users/logout', auth, (req,res)=> {
 
-    User.findOneAndUpdate({_id: req.user.id},{token:''},(err, doc)=>{
+    User.findOneAndUpdate(
+        {_id: req.user.id},
+        {token:''},
+        (err, doc)=>{
         if (err) return res.json({success:false, err})
         return res.status(200).send({
             success: true
@@ -44,8 +73,9 @@ app.get('/api/users/logout', auth, (req,res)=> {
 })
 
 app.post('/api/users/register', (req, res)=> {
-    const user = new User(req.body)
     
+    const user = new User(req.body)
+
     user.save((err, docs)=> {
         
         if(err) return res.json({success:false, err})
