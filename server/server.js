@@ -28,6 +28,27 @@ const {checkAdmin} = require('./middleware/checkadmin')
 //                          PRODUCTS
 //=================================================================
 
+app.get('/api/products/articles_by_id', (req,res)=> {
+    let type = req.query.type
+    let items = req.query.id
+
+    if(type === 'array') {
+        let ids = req.query.id.split(',')
+        items = []
+        items = ids.map(items => {
+            return mongoose.Types.ObjectId(items)
+        })
+    }
+
+    Product.
+    find({'_id':{$in:items}}).
+    populate('brand').
+    populate('wood').
+    exec((err, docs)=> {
+        return res.status(200).send(docs)
+    })
+})
+
 app.post('/api/products/article', auth, checkAdmin, (req, res)=> {
     const product = new Product(req.body)
 
@@ -39,7 +60,6 @@ app.post('/api/products/article', auth, checkAdmin, (req, res)=> {
         })
     })
 })
-
 
 //=================================================================
 //                          WOODS
