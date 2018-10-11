@@ -37,7 +37,12 @@ app.post('/api/products/brand', auth, checkAdmin, (req, res)=> {
     })
 })
 
-
+app.get('/api/products/get_brands', (req, res) => {
+    Brand.find({}, (err, brands)=> {
+        if (err) return res.status(400).send(err)
+        res.status(200).json(brands)
+    })
+})
 
 
 
