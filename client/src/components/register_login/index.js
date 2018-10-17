@@ -1,5 +1,6 @@
 import React from 'react';
 import SimpleButton from '../utils/button'
+import Login from './login'
 
 
 const RegisterLogin = () => {
@@ -20,7 +21,9 @@ const RegisterLogin = () => {
                         />
                     </div>
                     <div className='right'>
-
+                        <h2>Registered Customers</h2>
+                        <p>if you already have an account, please login</p>
+                        <Login></Login>
                     </div>
                 </div>
             </div>
