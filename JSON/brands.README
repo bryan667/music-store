@@ -51,3 +51,15 @@
     "name" : "Ernie ball",
     "__v" : 0
 }
+
+{
+    "_id" : ObjectId("5b2c171c357cb8b03cb04342"),
+    "name" : "Ernie ball",
+    "__v" : 0
+}
+
+{
+    "_id" : ObjectId("5bbeae4fcbf1a62eccd52144"),
+    "name" : "The Awyis Brand",
+    "__v" : 0
+}
