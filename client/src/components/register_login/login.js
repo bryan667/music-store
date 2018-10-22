@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import FormField from '../utils/form/formfield'
 import {update, generateData, isFormValid} from '../utils/form/formactions'
+import { withRouter } from 'react-router-dom' //passes router props from parent to child
 
 import { connect } from 'react-redux'
 import { loginUser } from '../../redux/actions/user_actions'
@@ -61,7 +62,16 @@ class Login extends Component {
         let formIsValid = isFormValid(this.state.formdata, 'login')
 
         if (formIsValid) {
-            this.props.dispatch(loginUser(dataToSubmit))
+            this.props.dispatch(loginUser(dataToSubmit)).then(response => {
+                if(response.payload.loginSuccess){
+                    console.log(response.payload)
+                    this.props.history.push('/user/dashboard')
+                } else {
+                    this.setState({
+                        formError: true
+                    })
+                }
+            })
         } else {
             this.setState({
                 formError: true
@@ -87,7 +97,7 @@ class Login extends Component {
                     />
                     {this.state.formError ? 
                         <div className='error_label'>
-                            Please check your username/password
+                            Invalid username/password
                         </div>
                     :null}
                     <button onClick={(event)=> this.submitForm(event)}>
@@ -99,4 +109,4 @@ class Login extends Component {
     }
 }
 
-export default connect()(Login);
+export default connect()(withRouter(Login));
