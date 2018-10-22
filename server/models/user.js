@@ -96,7 +96,6 @@ userSchema.statics.findByToken = function(token, cb) {
     })
 }
 
-
 const User = mongoose.model('User', userSchema)//convert the schema to a model --- mongoose.model(modelName, schema)
 //db collection?
 

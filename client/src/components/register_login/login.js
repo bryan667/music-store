@@ -53,7 +53,7 @@ class Login extends Component {
         })
     }
 
-    submitForm = () => {
+    submitForm = (event) => {
 
     }
 
@@ -72,6 +72,12 @@ class Login extends Component {
                         formdata={this.state.formdata.password}
                         change={(element)=> this.updateForm(element)}
                     />
+                    {this.state.formError ? 
+                        <div className='error_label'>
+                            Please check your username/password
+                        </div>
+                    :null}
+                    <button onClick={(event)=> this.submitForm(event)}></button>
                 </form>
             </div>
         );
