@@ -3,6 +3,7 @@ import FormField from '../utils/form/formfield'
 import {update, generateData, isFormValid} from '../utils/form/formactions'
 
 import { connect } from 'react-redux'
+import { loginUser } from '../../redux/actions/user_actions'
 
 class Login extends Component {
 
@@ -60,12 +61,11 @@ class Login extends Component {
         let formIsValid = isFormValid(this.state.formdata, 'login')
 
         if (formIsValid) {
-            console.log(dataToSubmit)
+            this.props.dispatch(loginUser(dataToSubmit))
         } else {
             this.setState({
                 formError: true
             })
-            console.log('Nope')
         }
        
     }
@@ -99,4 +99,4 @@ class Login extends Component {
     }
 }
 
-export default Login;
+export default connect()(Login);
