@@ -34,7 +34,7 @@ class Login extends Component {
                 config: {
                     name: 'password_input',
                     type: 'password',
-                    placeholder: 'Enter your email'                    
+                    placeholder: 'Enter your password'                    
                 },
                 validation: {
                     required: true

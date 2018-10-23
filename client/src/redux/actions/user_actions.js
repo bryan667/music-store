@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { USERS_SERVER } from '../../components/utils/misc'
-import { LOGIN_USER } from './type'
+import { USERS_SERVER } from '../../components/utils/misc'  //'/api/users'
+import { LOGIN_USER } from './type'  //string 'login_user'
 
 export function loginUser(dataToSubmit){
 
