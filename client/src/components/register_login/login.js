@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import FormField from '../utils/form/formfield'
-import {update} from '../utils/form/formactions'
+import {update, generateData, isFormValid} from '../utils/form/formactions'
+import { withRouter } from 'react-router-dom' //passes router props from parent to child
 
 import { connect } from 'react-redux'
+import { loginUser } from '../../redux/actions/user_actions'
 
 class Login extends Component {
 
@@ -32,7 +34,7 @@ class Login extends Component {
                 config: {
                     name: 'password_input',
                     type: 'password',
-                    placeholder: 'Enter your email'                    
+                    placeholder: 'Enter your password'                    
                 },
                 validation: {
                     required: true
@@ -53,8 +55,29 @@ class Login extends Component {
         })
     }
 
-    submitForm = () => {
+    submitForm = (event) => {
+        event.preventDefault()
 
+        let dataToSubmit = generateData(this.state.formdata, 'login')
+        let formIsValid = isFormValid(this.state.formdata, 'login')
+
+        if (formIsValid) {
+            this.props.dispatch(loginUser(dataToSubmit)).then(response => {
+                if(response.payload.loginSuccess){
+                    console.log(response.payload)
+                    this.props.history.push('/user/dashboard')
+                } else {
+                    this.setState({
+                        formError: true
+                    })
+                }
+            })
+        } else {
+            this.setState({
+                formError: true
+            })
+        }
+       
     }
 
 
@@ -72,10 +95,18 @@ class Login extends Component {
                         formdata={this.state.formdata.password}
                         change={(element)=> this.updateForm(element)}
                     />
+                    {this.state.formError ? 
+                        <div className='error_label'>
+                            Invalid username/password
+                        </div>
+                    :null}
+                    <button onClick={(event)=> this.submitForm(event)}>
+                        Log In
+                    </button>
                 </form>
             </div>
         );
     }
 }
 
-export default Login;
+export default connect()(withRouter(Login));
