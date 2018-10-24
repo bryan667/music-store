@@ -3,7 +3,7 @@ import FormField from '../utils/form/formfield'
 import {update, generateData, isFormValid} from '../utils/form/formactions'
 
 import { connect } from 'react-redux'
-import { loginUser } from '../../redux/actions/user_actions'
+import { registerUser } from '../../redux/actions/user_actions'
 
 class Register extends Component {
 
@@ -108,8 +108,26 @@ class Register extends Component {
         let formIsValid = isFormValid(this.state.formdata, 'register')
 
         if (formIsValid) {
-            console.log(dataToSubmit)
-        } else {
+            this.props.dispatch(registerUser(dataToSubmit))
+            .then(response => {
+                if(response.payload.success){
+                    this.setState({
+                        formError: false,
+                        formSuccess: true
+                    })
+
+                    setTimeout(()=> {
+                        this.props.history.push('/register_login')
+                    }, 3000)
+
+                    console.log(response.payload)
+                } else {
+                    this.setState({formError: true})
+                }
+            }).catch(e => {
+                this.setState({formError: true})
+            })
+        } else {    
             this.setState({
                 formError: true
             })
@@ -168,7 +186,7 @@ class Register extends Component {
                                     <div>
                                         {this.state.formError ? 
                                             <div className='error_label'>
-                                                Invalid username/password
+                                                Unable to create account
                                             </div>
                                         :null}
                                         <button onClick={(event)=> this.submitForm(event)}>
