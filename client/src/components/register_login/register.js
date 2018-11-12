@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import FormField from '../utils/form/formfield'
 import {update, generateData, isFormValid} from '../utils/form/formactions'
+import Dialog from '@material-ui/core/Dialog'
 
 import { connect } from 'react-redux'
 import { registerUser } from '../../redux/actions/user_actions'
@@ -9,7 +10,7 @@ class Register extends Component {
 
     state= {
         formError: false,
-        formSuccess:'',
+        formSuccess:false,
         formdata: {
             name: {
                 element: 'input',
@@ -197,6 +198,14 @@ class Register extends Component {
                         </div>
                     </div>
                 </div>
+                <Dialog open={this.state.formSuccess}>
+                    <div className='dialog_alert'>
+                        <div>Congratulations!</div>
+                        <div>
+                            You will be redirected to Login in a few seconds..
+                        </div>
+                    </div>
+                </Dialog>
             </div>
         );
     }
