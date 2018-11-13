@@ -141,6 +141,7 @@ app.get('/api/users/auth', auth, (req, res)=> {
     return res.status(200).json({
         message: 'awyis',
         isAdmin: req.user.role === 0 ? true : false,
+        isAuth: true,
         email: req.user.email,
         name: req.user.name,
         lastname: req.user.lastname,
