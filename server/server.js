@@ -7,7 +7,8 @@ const mongoose = require('mongoose')
 require('dotenv').config() //loads environment variables from .env file into process.env
 
 mongoose.Promise = global.Promise
-mongoose.connect(process.env.DATABASE)
+mongoose.connect(process.env.DATABASE, { useNewUrlParser: true })
+mongoose.set('useCreateIndex', true)
 
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
