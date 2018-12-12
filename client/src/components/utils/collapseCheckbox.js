@@ -45,17 +45,43 @@ class collapseCheckbox extends Component {
     renderList = () => (
         this.props.list ? 
             this.props.list.map((item)=> (
-                <div>
-                    {item.name}
-                </div>
+                <ListItem key={item._id} style={{padding: '10px 0'}}>
+                    <ListItemText primary={item.name}/>
+                    <ListItemSecondaryAction>
+                        <Checkbox 
+                            color='primary'
+                            onChange={this.toggleCheck(item._id)}
+                            checked={this.state.checked.indexOf(item._id) !== -1}
+                        />
+                    </ListItemSecondaryAction>
+                </ListItem>
             ))
         : null
     )
 
+    toggleCheck = value => () => {
+        const { checked } = this.state   
+        const currentIndex = checked.indexOf(value)
+        const newChecked = [...checked]
+
+        if (currentIndex === -1) {
+            newChecked.push(value)
+        } else {
+            newChecked.splice(currentIndex, 1)
+        }
+
+        this.setState({
+            checked: newChecked
+        }, () => {
+            this.props.handleFilters(newChecked)  //setState callback
+        })
+
+    }
+
     render() {
         return (
             <div className='collapse_items_wrapper'>
-                <List style={{borderBotton: '1px solid #dbdbdb'}}>
+                <List style={{borderBottom: '1px solid #DBDBDB'}}>
                     <ListItem onClick={this.handleClick} style={{padding: '10px 23px 10px 0'}}>
                         <ListItemText 
                             primary={this.props.title}
