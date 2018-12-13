@@ -57,10 +57,8 @@ class CollapseRadio extends Component {
     )
 
     handleChange = (event) => {
-
         let tempArray = []
         const data = this.props.list
-
         for (let key in data) {
             if (data[key]._id === parseInt(event.target.value, 10)){
                 tempArray = data[key].array

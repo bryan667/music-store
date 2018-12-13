@@ -4,7 +4,8 @@ import {
     GET_PRODUCTS_BY_SELL, 
     GET_PRODUCTS_BY_ARRIVAL,
     GET_BRANDS,
-    GET_WOODS
+    GET_WOODS,
+    GET_PRODUCTS_TO_SHOP
 } from './type'
 
 export function getProductsBySell () {
@@ -30,6 +31,32 @@ export function getProductsByArrival () {
         payload: request
     }
 
+}
+
+export function getProductsToShop (skip, limit, filters = [], previousState=[]) {
+    const data = {
+        limit,
+        skip,
+        filters
+    }
+
+    const request = axios.post(`${PRODUCTS_SERVER}/shop`, data)
+    .then(response => {
+        let newState = [
+            ...previousState,
+            ...response.data.articles
+        ]
+
+        return {
+            size: response.data.size,
+            articles: newState
+        }
+    })
+
+    return {
+        type: GET_PRODUCTS_TO_SHOP,
+        payload: request
+    }
 }
 
 //====================================//
