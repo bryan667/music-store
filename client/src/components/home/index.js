@@ -30,7 +30,7 @@ class Home extends Component {
     }
 }
 
-const mapStateToProps = (state) => {
+function mapStateToProps (state) {
     return {
         products: state.products
     }

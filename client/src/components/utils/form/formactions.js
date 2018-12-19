@@ -1,4 +1,3 @@
-
 export const validate = (element, formdata=[]) => {
     let error = [true,'']
 
@@ -73,4 +72,16 @@ export const isFormValid = (formdata, formName) => {
     }
 
     return formIsValid
+}
+
+export const populateOptionFields = (formdata, arrayData =[], field) => {
+    const newArray = []
+    const newFormData = {...formdata}
+
+    arrayData.forEach(item => {
+        newArray.push({key: item._id, value:item.name})
+    })
+
+    newFormData[field].config.options = newArray
+    return newFormData
 }

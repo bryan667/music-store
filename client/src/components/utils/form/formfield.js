@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Formfield = ({formdata, change, id}) => {
+const FormField = ({formdata, change, id}) => {
 
     const showError = () => {
         let errorMessage = ''
@@ -23,6 +23,9 @@ const Formfield = ({formdata, change, id}) => {
             case('input'):
                 formTemplate = (
                     <div className='formBlock'>
+                        { formdata.showLabel ?
+                            <div className='label_inputs'>{formdata.config.label}</div>
+                        : null}
                         <input
                             {...formdata.config}
                             value={formdata.value}
@@ -33,8 +36,57 @@ const Formfield = ({formdata, change, id}) => {
                         {showError()}
                     </div>
                 )
+            break;
+
+            case('textarea'):
+                formTemplate = (
+                    <div className='formBlock'>
+                        { formdata.showLabel ?
+                            <div className='label_inputs'>{formdata.config.label}</div>
+                        : null}
+                        <textarea
+                            {...formdata.config}
+                            value={formdata.value}
+                            onBlur={(event)=> change({event, id, blur: true})}
+                            onChange={(event) => change({event, id})}
+                        >
+                        </textarea>
+                        {showError()}
+                    </div>
+                )
+            break;
+
+            case('select'):
+                formTemplate = (
+                    <div className='formBlock'>
+                        { formdata.showLabel ?
+                            <div className='label_inputs'>{formdata.config.label}</div>
+                        : null}
+
+                        <select
+                            id={formdata.config.name}
+                            value={formdata.value}
+                            onBlur={(event)=> change({event, id, blur: true})}
+                            onChange={(event) => change({event, id})}
+                        >
+                            <option value=''>Select one</option>
+                                {
+                                    formdata.config.options.map(item => (
+                                        <option 
+                                        key={item.key}
+                                        value={item.key}
+                                        >
+                                            {item.value}
+                                        </option>
+                                    ))
+                                }
+                        </select>
+                        {showError()}
+                    </div>
+                )
 
             break;
+            
             default: 
                 formTemplate = ''
         }
@@ -50,4 +102,4 @@ const Formfield = ({formdata, change, id}) => {
     );
 };
 
-export default Formfield;
+export default FormField;
