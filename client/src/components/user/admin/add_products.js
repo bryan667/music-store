@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import UserLayout from '../../../hoc/user'
 
 import FormField from '../../utils/form/formfield'
-import {update, generateData, isFormValid, populateOptionFields} from '../../utils/form/formactions'
+import {update, generateData, isFormValid, populateOptionFields, resetFields} from '../../utils/form/formactions'
 
 import { connect } from 'react-redux'
-import { getBrands, getWoods } from '../../../redux/actions/products_actions'
+import { getBrands, getWoods, addProduct } from '../../../redux/actions/products_actions'
 
 class AddProduct extends Component {
 
@@ -87,8 +87,8 @@ class AddProduct extends Component {
                     label: 'Shipping',
                     name: 'shipping_input',
                     options: [
-                        {key: 'Yes', value: 'Yes'},
-                        {key: 'No', value: 'No'},
+                        {key: true, value: 'Yes'},
+                        {key: false, value: 'No'},
                     ]
                 },
                 validation: {
@@ -106,8 +106,8 @@ class AddProduct extends Component {
                     label: 'Available, in stock',
                     name: 'available_input',
                     options: [
-                        {key: 'Yes', value: 'Yes'},
-                        {key: 'No', value: 'No'},
+                        {key: true, value: 'Yes'},
+                        {key: false, value: 'No'},
                     ]
                 },
                 validation: {
@@ -162,8 +162,8 @@ class AddProduct extends Component {
                     label: 'Publish',
                     name: 'publish_input',
                     options: [
-                        {key: 'public', value: 'Public'},
-                        {key: 'hidden', value: 'Hidden'},
+                        {key: true, value: 'Public'},
+                        {key: false, value: 'Hidden'},
                     ]
                 },
                 validation: {
@@ -199,14 +199,51 @@ class AddProduct extends Component {
     }
 
     updateForm = (element) => {
-        // element.event.preventDefault()
 
-        const newFormData = update(element, this.state.formdata, 'register')
+        const newFormData = update(element, this.state.formdata, 'products')
 
         this.setState({
             formError: false,
             formdata: newFormData
         })
+    }
+
+    resetFieldsHandler = () => {
+        const newFormData = resetFields(this.state.formdata, 'products')
+
+        this.setState({
+            formdata: newFormData,
+            formSuccess: true
+        })
+
+        setTimeout(()=> {
+            this.setState({
+                formSuccess: false
+            })
+        }, 2000)
+    }
+
+    submitForm = (event) => {
+        event.preventDefault()
+
+        let dataToSubmit = generateData(this.state.formdata, 'products')
+        let formIsValid = isFormValid(this.state.formdata, 'products')
+
+        if (formIsValid) {
+            console.log(dataToSubmit)
+            this.props.dispatch(addProduct(dataToSubmit))
+                .then((response)=> {
+                    if(this.props.products.addProduct.success) {
+                        this.resetFieldsHandler()
+                    } else {
+                        this.setState({formError: true})
+                    }
+                })
+        } else {    
+            this.setState({
+                formError: true
+            })
+        }       
     }
 
     render() {

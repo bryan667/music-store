@@ -24,7 +24,6 @@ const {Product} = require('./models/product')
 const {auth} = require('./middleware/auth')
 const {checkAdmin} = require('./middleware/checkadmin')
 
-
 //=================================================================
 //                          PRODUCTS
 //=================================================================
@@ -180,7 +179,7 @@ app.get('/api/users/auth', auth, (req, res)=> {
 
     return res.status(200).json({
         message: 'awyis',
-        isAdmin: req.user.role === 0 ? true : false,
+        isAdmin: req.user.role === 1 ? true : false,
         isAuth: true,
         email: req.user.email,
         name: req.user.name,
